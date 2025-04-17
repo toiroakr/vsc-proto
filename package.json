@@ -1,0 +1,47 @@
+{
+  "name": "vsc-sync",
+  "description": "CLI to share \".vscode/settings.json\"",
+  "version": "0.0.1",
+  "bin": {
+    "vsc-sync": "dist/index.mjs"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "biome": "biome check .",
+    "cmd": "node --no-warnings=ExperimentalWarning src/main.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "citty": "^0.1.6",
+    "fs-extra": "^11.3.0",
+    "pkg-types": "^2.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.14.1",
+    "multiline-ts": "^4.0.1",
+    "pkg-pr-new": "^0.0.42",
+    "typescript": "^5.8.3",
+    "unbuild": "^3.5.0",
+    "vitest": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:toiroakr/vsc-sync.git"
+  },
+  "keywords": [
+    "vscode",
+    "extension",
+    "setting",
+    "settings"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "packageManager": "pnpm@10.8.0"
+}
