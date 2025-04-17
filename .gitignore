@@ -1,0 +1,8 @@
+node_modules/
+bin/
+
+.vscode/*
+!.vscode/settings-project.json
+.vscode/settings-local.json
+.vscode/settings.json
+.npmrc

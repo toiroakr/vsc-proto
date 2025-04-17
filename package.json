@@ -1,0 +1,42 @@
+{
+  "name": "vsc-proto",
+  "version": "0.1.0",
+  "bin": {
+    "vsc-proto": "bin/index.mjs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "biome": "biome check .",
+    "cmd": "node --no-warnings=ExperimentalWarning src/index.mts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "fs-extra": "^11.3.0"
+  },
+  "packageManager": "pnpm@10.8.0",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.14.1",
+    "multiline-ts": "^4.0.1",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:toiroakr/vsc-proto.git"
+  },
+  "keywords": [
+    "vscode",
+    "extension",
+    "setting",
+    "settings"
+  ],
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ]
+}
