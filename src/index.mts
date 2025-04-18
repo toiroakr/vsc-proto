@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 import { execSync } from "node:child_process";
 import { styleText, isDeepStrictEqual } from "node:util";
 import path from "node:path";
