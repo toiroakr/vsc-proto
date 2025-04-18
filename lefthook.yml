@@ -1,0 +1,4 @@
+post-checkout:
+  jobs:
+    - name: sync vscode settings
+      run: pnpm cmd sync
