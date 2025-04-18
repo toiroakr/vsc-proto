@@ -3,10 +3,10 @@
   "description": "CLI to share \".vscode/settings.json\"",
   "version": "0.2.0",
   "bin": {
-    "vsc-proto": "bin/index.mjs"
+    "vsc-proto": "dist/index.mjs"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "unbuild",
     "biome": "biome check .",
     "cmd": "node --no-warnings=ExperimentalWarning src/index.mts",
     "test": "vitest run",
@@ -25,6 +25,7 @@
     "multiline-ts": "^4.0.1",
     "pkg-pr-new": "^0.0.42",
     "typescript": "^5.8.3",
+    "unbuild": "^3.5.0",
     "vitest": "^3.1.1"
   },
   "repository": {
