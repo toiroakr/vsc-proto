@@ -39,7 +39,7 @@
     "settings"
   ],
   "files": [
-    "bin",
+    "dist",
     "README.md",
     "LICENSE"
   ],
