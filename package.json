@@ -1,6 +1,7 @@
 {
   "name": "vsc-proto",
-  "version": "0.1.0",
+  "description": "CLI to share \".vscode/settings.json\"",
+  "version": "0.2.0",
   "bin": {
     "vsc-proto": "bin/index.mjs"
   },
@@ -13,7 +14,9 @@
     "prepublish": "pnpm build"
   },
   "dependencies": {
-    "fs-extra": "^11.3.0"
+    "citty": "^0.1.6",
+    "fs-extra": "^11.3.0",
+    "pkg-types": "^2.1.0"
   },
   "packageManager": "pnpm@10.8.0",
   "devDependencies": {

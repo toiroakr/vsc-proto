@@ -26,6 +26,14 @@ vsc-proto init
 - If `.vscode/settings.json` exists, copies it to `.vscode/settings-project.json`.
 - Creates an empty `.vscode/settings-local.json` if it doesn't exist.
 
+#### Options
+
+- `--dir, -d`: Specify a custom directory for VS Code settings (default: `.vscode` in the Git root directory)
+
+  ```bash
+  vsc-proto init --dir /path/to/custom/vscode/dir
+  ```
+
 ### Synchronization
 
 ```bash
@@ -34,6 +42,14 @@ vsc-proto sync
 
 - Merges `.vscode/settings-project.json` and `.vscode/settings-local.json` to create `.vscode/settings.json`.
 - It's recommended to run this command with a Git post-checkout hook.
+
+#### Options
+
+- `--dir, -d`: Specify a custom directory for VS Code settings (default: `.vscode` in the Git root directory)
+
+  ```bash
+  vsc-proto sync --dir /path/to/custom/vscode/dir
+  ```
 
 #### Git Hook Setup
 
@@ -46,7 +62,6 @@ npx husky init
 
 `.husky/post-checkout`
 ```sh
-#!/usr/bin/env sh
 npx vsc-proto sync
 ```
 
@@ -80,24 +95,3 @@ pnpm test
 # Run tests in watch mode
 pnpm test:watch
 ```
-
-#### Test Coverage
-
-The tests cover the following functionality:
-
-- `init` function:
-  - Creating all necessary files when none exist
-  - Creating only missing files when some files already exist
-  - Not overwriting existing files
-  - Updating `.gitignore` with the required entries
-
-- `sync` function:
-  - Merging settings from project and local configuration files
-  - Creating missing files before syncing
-  - Prioritizing local settings over project settings
-
-The tests use mocks for the following dependencies:
-- `fs-extra` for file system operations
-- `node:child_process` for Git root directory detection
-
-This ensures that tests can run without actually modifying the file system or executing Git commands.

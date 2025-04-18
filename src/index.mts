@@ -1,47 +1,24 @@
 import { execSync } from "node:child_process";
-import { parseArgs, styleText, isDeepStrictEqual } from "node:util";
+import { styleText, isDeepStrictEqual } from "node:util";
 import path from "node:path";
 import fs from "fs-extra";
+import { defineCommand, runMain } from "citty";
+import { readPackageJSON } from "pkg-types";
 
 const gitRoot = execSync("git rev-parse --show-toplevel").toString().trim();
-const args = parseArgs({
-	options: {
-		dir: {
-			type: "string",
-			short: "d",
-			default: path.join(gitRoot, ".vscode"),
-		},
-	},
-	allowPositionals: true,
-});
-
-const [command] = args.positionals;
-const vscodeDir = args.values.dir;
+const defaultVSCodeDir = path.join(gitRoot, ".vscode");
 
 const getPaths = (vscodeDir: string) => {
 	return {
 		vscodeDir: vscodeDir,
 		gitignorePath: path.join(gitRoot, ".gitignore"),
 		settingsPath: path.join(vscodeDir, "settings.json"),
+		settingsBackupPath: path.join(vscodeDir, "settings.bak.json"),
 		projectSettingsPath: path.join(vscodeDir, "settings-project.json"),
 		localSettingsPath: path.join(vscodeDir, "settings-local.json"),
 	} as const;
 };
 type Paths = ReturnType<typeof getPaths>;
-
-if (import.meta.filename === process.argv[1]) {
-	switch (command) {
-		case "init":
-			await init(vscodeDir);
-			break;
-		case "sync":
-			await sync(vscodeDir);
-			break;
-		default:
-			console.log("Usage: vsc-proto <init|sync> [-d|--dir=<path>]");
-			process.exit(1);
-	}
-}
 
 async function ensureSettings(paths: Paths): Promise<void> {
 	await fs.ensureDir(paths.vscodeDir);
@@ -66,14 +43,17 @@ async function ensureSettings(paths: Paths): Promise<void> {
 	if (!(await fs.pathExists(paths.localSettingsPath))) {
 		const settings = await fs.readJson(paths.settingsPath);
 		const projectSettings = await fs.readJson(paths.projectSettingsPath);
+
+		// Backup settings.json before creating settings-local.json
+		if (Object.keys(settings).length > 0) {
+			await fs.copy(paths.settingsPath, paths.settingsBackupPath);
+			console.log(
+				`${styleText("yellow", path.relative(process.cwd(), paths.settingsBackupPath))} created as backup.`,
+			);
+		}
+
 		const localSettings: Record<string, unknown> = {};
 		for (const key in settings) {
-			console.log({
-				key: key,
-				ret: settings[key],
-				project: projectSettings[key],
-				equal: isDeepStrictEqual(settings[key], projectSettings[key]),
-			});
 			if (
 				key in projectSettings &&
 				isDeepStrictEqual(settings[key], projectSettings[key])
@@ -129,4 +109,59 @@ export async function sync(vscodeDir: string): Promise<void> {
 	console.log(
 		`${styleText("yellow", path.relative(process.cwd(), paths.settingsPath))} synchronized.`,
 	);
+}
+
+const initCommand = defineCommand({
+	meta: {
+		name: "init",
+		description: "Initialize VS Code settings",
+	},
+	args: {
+		dir: {
+			type: "string",
+			description: "VS Code settings directory",
+			default: defaultVSCodeDir,
+			shortcut: "d",
+		},
+	},
+	async run({ args }) {
+		await init(args.dir);
+		return 0;
+	},
+});
+
+const syncCommand = defineCommand({
+	meta: {
+		name: "sync",
+		description: "Synchronize VS Code settings",
+	},
+	args: {
+		dir: {
+			type: "string",
+			description: "VS Code settings directory",
+			default: defaultVSCodeDir,
+			shortcut: "d",
+		},
+	},
+	async run({ args }) {
+		await sync(args.dir);
+		return 0;
+	},
+});
+
+const packageJson = await readPackageJSON(import.meta.url);
+const main = defineCommand({
+	meta: {
+		name: packageJson.name,
+		version: packageJson.version,
+		description: packageJson.description,
+	},
+	subCommands: {
+		init: initCommand,
+		sync: syncCommand,
+	},
+});
+
+if (import.meta.filename === process.argv[1]) {
+	runMain(main);
 }
