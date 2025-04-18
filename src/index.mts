@@ -7,13 +7,16 @@ import fs from "fs-extra";
 import { defineCommand, runMain } from "citty";
 import { readPackageJSON } from "pkg-types";
 
-const gitRoot = execSync("git rev-parse --show-toplevel").toString().trim();
-const defaultVSCodeDir = path.join(gitRoot, ".vscode");
-
-const getPaths = (vscodeDir: string) => {
+const getPaths = (dir?: string) => {
+	const vscodeDir =
+		dir ??
+		path.join(
+			execSync("git rev-parse --show-toplevel").toString().trim(),
+			".vscode",
+		);
 	return {
-		vscodeDir: vscodeDir,
-		gitignorePath: path.join(gitRoot, ".gitignore"),
+		vscodeDir,
+		gitignorePath: path.join(vscodeDir, "..", ".gitignore"),
 		settingsPath: path.join(vscodeDir, "settings.json"),
 		settingsBackupPath: path.join(vscodeDir, "settings.bak.json"),
 		projectSettingsPath: path.join(vscodeDir, "settings-project.json"),
@@ -71,7 +74,7 @@ async function ensureSettings(paths: Paths): Promise<void> {
 	}
 }
 
-export async function init(vscodeDir: string): Promise<void> {
+export async function init(vscodeDir?: string): Promise<void> {
 	const paths = getPaths(vscodeDir);
 
 	// Append entries to .gitignore
@@ -96,7 +99,7 @@ export async function init(vscodeDir: string): Promise<void> {
 	console.log(styleText("dim", "vsc-proto initialized."));
 }
 
-export async function sync(vscodeDir: string): Promise<void> {
+export async function sync(vscodeDir?: string): Promise<void> {
 	const paths = getPaths(vscodeDir);
 
 	await ensureSettings(paths);
@@ -122,7 +125,6 @@ const initCommand = defineCommand({
 		dir: {
 			type: "string",
 			description: "VS Code settings directory",
-			default: defaultVSCodeDir,
 			shortcut: "d",
 		},
 	},
@@ -141,7 +143,6 @@ const syncCommand = defineCommand({
 		dir: {
 			type: "string",
 			description: "VS Code settings directory",
-			default: defaultVSCodeDir,
 			shortcut: "d",
 		},
 	},
