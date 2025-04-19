@@ -1,5 +1,8 @@
 # vsc-sync
 
+[![npm version](https://badge.fury.io/js/vsc-sync.svg)](https://badge.fury.io/js/vsc-sync)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 vsc-sync is a CLI tool designed to share `.vscode/settings.json` within a development team.
 
 It allows teams to establish and maintain a set of common settings, while also providing the flexibility for individual team members to override these settings according to their preferences.
