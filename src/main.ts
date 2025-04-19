@@ -22,7 +22,7 @@ function getPaths(dir?: string) {
 		vscodeDir,
 		gitignorePath: path.join(vscodeDir, "..", ".gitignore"),
 		settingsPath: path.join(vscodeDir, "settings.json"),
-		settingsBackupPath: path.join(vscodeDir, "settings.bak.json"),
+		settingsBackupPath: path.join(vscodeDir, "settings.bak.jsonc"),
 		projectSettingsPath: path.join(vscodeDir, "settings-project.jsonc"),
 		localSettingsPath: path.join(vscodeDir, "settings-local.jsonc"),
 	} as const;
