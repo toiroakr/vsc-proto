@@ -21,11 +21,18 @@ vi.mock("fs-extra", () => {
 
 const fs = vi.mocked(await import("fs-extra")).default;
 const gitignoreEntries = [
-	".vscode/settings-local.json",
-	"!.vscode/settings-project.json",
+	".vscode/settings-local.jsonc",
+	"!.vscode/settings-project.jsonc",
 	".vscode/settings.json",
 ];
 const gitignoreContent = `${gitignoreEntries.join("\n")}\n`;
+
+const jsoncStringify = (
+	value: Parameters<typeof JSON.stringify>[0],
+) => multiline`
+// comment
+${JSON.stringify(value, null, 2)}
+`;
 
 describe("init function", () => {
 	beforeEach(() => {
@@ -36,7 +43,7 @@ describe("init function", () => {
 		vi.spyOn(fs, "pathExists").mockImplementation(async (filePath) => {
 			return filePath.toString().includes(".gitignore");
 		});
-		vi.spyOn(fs, "readFile").mockImplementation(() => "");
+		vi.spyOn(fs, "readFile").mockImplementation(() => "{}");
 
 		await init(".vscode");
 
@@ -48,10 +55,10 @@ describe("init function", () => {
 		);
 		expect(fs.copy).toHaveBeenCalledWith(
 			expect.stringContaining("settings.json"),
-			expect.stringContaining("settings-project.json"),
+			expect.stringContaining("settings-project.jsonc"),
 		);
 		expect(fs.writeJson).toHaveBeenCalledWith(
-			expect.stringContaining("settings-local.json"),
+			expect.stringContaining("settings-local.jsonc"),
 			expect.any(Object),
 			{ spaces: 2 },
 		);
@@ -66,7 +73,12 @@ describe("init function", () => {
 		vi.spyOn(fs, "pathExists").mockImplementation(async (filePath) => {
 			return filePath.toString().includes(".gitignore");
 		});
-		vi.spyOn(fs, "readFile").mockImplementation(() => "");
+		vi.spyOn(fs, "readFile").mockImplementation((path) => {
+			if (path.toString().includes(".gitignore")) {
+				return "";
+			}
+			return "{}";
+		});
 
 		// exec
 		await init(".vscode");
@@ -83,14 +95,16 @@ describe("init function", () => {
 		vi.spyOn(fs, "pathExists").mockImplementation(async (filePath) => {
 			return filePath.toString().includes(".gitignore");
 		});
-		vi.spyOn(fs, "readFile").mockImplementation(
-			() =>
-				multiline`
-			node_modules/
-			.vscode/settings.json
+		vi.spyOn(fs, "readFile").mockImplementation((path) => {
+			if (path.toString().includes(".gitignore")) {
+				return multiline`
+				node_modules/
+				.vscode/settings.json
 
-			`,
-		);
+			`;
+			}
+			return "{}";
+		});
 
 		// exec
 		await init(".vscode");
@@ -101,8 +115,8 @@ describe("init function", () => {
 			multiline`
 			node_modules/
 			.vscode/settings.json
-			.vscode/settings-local.json
-			!.vscode/settings-project.json
+			.vscode/settings-local.jsonc
+			!.vscode/settings-project.jsonc
 
 			`,
 		);
@@ -113,15 +127,17 @@ describe("init function", () => {
 		vi.spyOn(fs, "pathExists").mockImplementation(async (filePath) => {
 			return filePath.toString().includes(".gitignore");
 		});
-		vi.spyOn(fs, "readFile").mockImplementation(
-			() =>
-				multiline`
-			.vscode/settings.json
-			.vscode/settings-local.json
-			!.vscode/settings-project.json
+		vi.spyOn(fs, "readFile").mockImplementation((path) => {
+			if (path.toString().includes(".gitignore")) {
+				return multiline`
+				!.vscode/settings-project.jsonc
+				.vscode/settings-local.jsonc
+				.vscode/settings.json
 
-			`,
-		);
+			`;
+			}
+			return "{}";
+		});
 
 		// exec
 		await init(".vscode");
@@ -130,9 +146,9 @@ describe("init function", () => {
 		expect(fs.writeFile).toHaveBeenCalledWith(
 			expect.stringContaining(".gitignore"),
 			multiline`
+			!.vscode/settings-project.jsonc
+			.vscode/settings-local.jsonc
 			.vscode/settings.json
-			.vscode/settings-local.json
-			!.vscode/settings-project.json
 
 			`,
 		);
@@ -144,7 +160,9 @@ describe("init function", () => {
 			const path = filePath.toString();
 			return path.includes("settings.json") || path.includes(".gitignore");
 		});
-		vi.spyOn(fs, "readJson").mockResolvedValue({ "editor.formatOnSave": true });
+		vi.spyOn(fs, "readFile").mockImplementation(async () =>
+			jsoncStringify({ "editor.formatOnSave": true }),
+		);
 
 		// exec
 		await init(".vscode");
@@ -157,10 +175,10 @@ describe("init function", () => {
 		);
 		expect(fs.copy).toHaveBeenCalledWith(
 			expect.stringContaining("settings.json"),
-			expect.stringContaining("settings-project.json"),
+			expect.stringContaining("settings-project.jsonc"),
 		);
 		expect(fs.writeJson).toHaveBeenCalledWith(
-			expect.stringContaining("settings-local.json"),
+			expect.stringContaining("settings-local.jsonc"),
 			expect.any(Object),
 			{ spaces: 2 },
 		);
@@ -169,15 +187,15 @@ describe("init function", () => {
 	it("should not overwrite existing files when all files exist", async () => {
 		// prepare
 		vi.spyOn(fs, "pathExists").mockImplementation(async () => true);
-		vi.spyOn(fs, "readJson").mockImplementation(async (filePath) => {
+		vi.spyOn(fs, "readFile").mockImplementation(async (filePath) => {
 			const path = filePath.toString();
 			if (
 				path.includes("settings.json") ||
-				path.includes("settings-project.json")
+				path.includes("settings-project.jsonc")
 			) {
-				return { "editor.formatOnSave": true };
+				return jsoncStringify({ "editor.formatOnSave": true });
 			}
-			return {};
+			return "{}";
 		});
 
 		// exec
@@ -191,10 +209,10 @@ describe("init function", () => {
 		);
 		expect(fs.copy).not.toHaveBeenCalledWith(
 			expect.stringContaining("settings.json"),
-			expect.stringContaining("settings-project.json"),
+			expect.stringContaining("settings-project.jsonc"),
 		);
 		expect(fs.writeJson).not.toHaveBeenCalledWith(
-			expect.stringContaining("settings-local.json"),
+			expect.stringContaining("settings-local.jsonc"),
 			expect.any(Object),
 			expect.any(Object),
 		);
@@ -209,15 +227,15 @@ describe("sync function", () => {
 	it("should merge settings correctly when all files exist", async () => {
 		// prepare
 		vi.spyOn(fs, "pathExists").mockImplementation(async () => true);
-		vi.spyOn(fs, "readJson").mockImplementation(async (filePath) => {
+		vi.spyOn(fs, "readFile").mockImplementation((filePath) => {
 			const path = filePath.toString();
-			if (path.includes("settings-project.json")) {
-				return { "editor.tabSize": 2 };
+			if (path.includes("settings-project.jsonc")) {
+				return jsoncStringify({ "editor.tabSize": 2 });
 			}
-			if (path.includes("settings-local.json")) {
-				return { "editor.formatOnSave": true };
+			if (path.includes("settings-local.jsonc")) {
+				return jsoncStringify({ "editor.formatOnSave": true });
 			}
-			return {};
+			return "{}";
 		});
 
 		// exec
@@ -234,17 +252,17 @@ describe("sync function", () => {
 	it("should create missing files before syncing", async () => {
 		// prepare
 		vi.spyOn(fs, "pathExists").mockImplementation(async (filePath) => {
-			return !filePath.toString().includes("settings-local.json");
+			return !filePath.toString().includes("settings-local.jsonc");
 		});
-		vi.spyOn(fs, "readJson").mockImplementation(async (filePath) => {
+		vi.spyOn(fs, "readFile").mockImplementation(async (filePath) => {
 			const path = filePath.toString();
 			if (
-				path.includes("settings-project.json") ||
+				path.includes("settings-project.jsonc") ||
 				path.includes("settings.json")
 			) {
-				return { "editor.tabSize": 2 };
+				return jsoncStringify({ "editor.tabSize": 2 });
 			}
-			return {};
+			return "{}";
 		});
 
 		// exec
@@ -252,7 +270,7 @@ describe("sync function", () => {
 
 		// assert
 		expect(fs.writeJson).toHaveBeenCalledWith(
-			expect.stringContaining("settings-local.json"),
+			expect.stringContaining("settings-local.jsonc"),
 			expect.any(Object),
 			{ spaces: 2 },
 		);
@@ -265,16 +283,16 @@ describe("sync function", () => {
 
 	it("should prioritize local settings over project settings", async () => {
 		// prepare
-		vi.spyOn(fs, "pathExists").mockImplementation(async () => true);
-		vi.spyOn(fs, "readJson").mockImplementation(async (filePath) => {
+		vi.spyOn(fs, "pathExists").mockImplementation(() => true);
+		vi.spyOn(fs, "readFile").mockImplementation((filePath) => {
 			const path = filePath.toString();
-			if (path.includes("settings-project.json")) {
-				return { "editor.tabSize": 2, "editor.fontSize": 14 };
+			if (path.includes("settings-project.jsonc")) {
+				return jsoncStringify({ "editor.tabSize": 2, "editor.fontSize": 14 });
 			}
-			if (path.includes("settings-local.json")) {
-				return { "editor.tabSize": 4 };
+			if (path.includes("settings-local.jsonc")) {
+				return jsoncStringify({ "editor.tabSize": 4 });
 			}
-			return {};
+			return "{}";
 		});
 
 		// exec
@@ -292,28 +310,31 @@ describe("sync function", () => {
 		// prepare
 		vi.spyOn(fs, "pathExists").mockImplementation(async (filePath) => {
 			const path = filePath.toString();
-			return !path.includes("settings-local.json");
+			return !path.includes("settings-local.jsonc");
 		});
-		vi.spyOn(fs, "readJson").mockImplementation(async (filePath) => {
+		vi.spyOn(fs, "readFile").mockImplementation(async (filePath) => {
 			const path = filePath.toString();
 			if (path.includes("settings.json")) {
-				return {
+				return jsoncStringify({
 					"editor.formatOnSave": true,
 					"editor.tabSize": 2,
 					"editor.fontSize": 14,
-				};
+				});
 			}
-			if (path.includes("settings-project.json")) {
-				return {
+			if (path.includes("settings-project.jsonc")) {
+				return jsoncStringify({
 					"editor.tabCompletion": "on",
 					"editor.tabSize": 2,
 					"editor.fontSize": 12,
-				};
+				});
 			}
-			if (path.includes("settings-local.json")) {
-				return { "editor.formatOnSave": true, "editor.fontSize": 14 };
+			if (path.includes("settings-local.jsonc")) {
+				return jsoncStringify({
+					"editor.formatOnSave": true,
+					"editor.fontSize": 14,
+				});
 			}
-			return {};
+			return "{}";
 		});
 
 		// exec
@@ -322,7 +343,7 @@ describe("sync function", () => {
 		// assert
 		expect(fs.writeJson).toHaveBeenCalledTimes(2);
 		expect(fs.writeJson).toHaveBeenCalledWith(
-			expect.stringContaining("settings-local.json"),
+			expect.stringContaining("settings-local.jsonc"),
 			{ "editor.formatOnSave": true, "editor.fontSize": 14 },
 			{ spaces: 2 },
 		);

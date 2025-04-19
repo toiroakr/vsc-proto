@@ -4,8 +4,14 @@ import { execSync } from "node:child_process";
 import { styleText, isDeepStrictEqual } from "node:util";
 import path from "node:path";
 import fs from "fs-extra";
+import { parse } from "jsonc-parser";
 
-const getPaths = (dir?: string) => {
+async function readJsonc(filePath: string): Promise<Record<string, unknown>> {
+	const content = await fs.readFile(filePath, "utf8");
+	return parse(content);
+}
+
+function getPaths(dir?: string) {
 	const vscodeDir =
 		dir ??
 		path.join(
@@ -17,10 +23,10 @@ const getPaths = (dir?: string) => {
 		gitignorePath: path.join(vscodeDir, "..", ".gitignore"),
 		settingsPath: path.join(vscodeDir, "settings.json"),
 		settingsBackupPath: path.join(vscodeDir, "settings.bak.json"),
-		projectSettingsPath: path.join(vscodeDir, "settings-project.json"),
-		localSettingsPath: path.join(vscodeDir, "settings-local.json"),
+		projectSettingsPath: path.join(vscodeDir, "settings-project.jsonc"),
+		localSettingsPath: path.join(vscodeDir, "settings-local.jsonc"),
 	} as const;
-};
+}
 type Paths = ReturnType<typeof getPaths>;
 
 async function ensureSettings(paths: Paths): Promise<void> {
@@ -34,7 +40,7 @@ async function ensureSettings(paths: Paths): Promise<void> {
 		);
 	}
 
-	// Copy settings.json to settings-project.json if it doesn't exist
+	// Copy settings.json to settings-project.jsonc if it doesn't exist
 	if (!(await fs.pathExists(paths.projectSettingsPath))) {
 		await fs.copy(paths.settingsPath, paths.projectSettingsPath);
 		console.log(
@@ -42,12 +48,12 @@ async function ensureSettings(paths: Paths): Promise<void> {
 		);
 	}
 
-	// Create settings-local.json if it doesn't exist
+	// Create settings-local.jsonc if it doesn't exist
 	if (!(await fs.pathExists(paths.localSettingsPath))) {
-		const settings = await fs.readJson(paths.settingsPath);
-		const projectSettings = await fs.readJson(paths.projectSettingsPath);
+		const settings = await readJsonc(paths.settingsPath);
+		const projectSettings = await readJsonc(paths.projectSettingsPath);
 
-		// Backup settings.json before creating settings-local.json
+		// Backup settings.json before creating settings-local.jsonc
 		if (Object.keys(settings).length > 0) {
 			await fs.copy(paths.settingsPath, paths.settingsBackupPath);
 			console.log(
@@ -77,8 +83,8 @@ export async function init(vscodeDir?: string): Promise<void> {
 
 	// Append entries to .gitignore
 	const gitignoreEntries = [
-		".vscode/settings-local.json",
-		"!.vscode/settings-project.json",
+		".vscode/settings-local.jsonc",
+		"!.vscode/settings-project.jsonc",
 		".vscode/settings.json",
 	];
 	let gitignoreContent = "";
@@ -102,8 +108,8 @@ export async function sync(vscodeDir?: string): Promise<void> {
 
 	await ensureSettings(paths);
 
-	const projectSettings = await fs.readJson(paths.projectSettingsPath);
-	const localSettings = await fs.readJson(paths.localSettingsPath);
+	const projectSettings = await readJsonc(paths.projectSettingsPath);
+	const localSettings = await readJsonc(paths.localSettingsPath);
 
 	const mergedSettings = { ...projectSettings, ...localSettings };
 
