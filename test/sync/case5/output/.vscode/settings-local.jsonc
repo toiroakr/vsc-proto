@@ -1,0 +1,39 @@
+{
+  "editor.fontSize": 14,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "workbench.colorTheme": "Default Dark+",
+  "typescript": {
+    "preferences": {
+      "quoteStyle": "double",
+      "importModuleSpecifier": "non-relative"
+    },
+    "suggest": {
+      "completeFunctionCalls": true,
+      "snippets": {
+        "enabled": false
+      }
+    },
+    "updateImportsOnFileMove": {
+      "enabled": "prompt"
+    },
+    "tsserver": {
+      "useSyntaxServer": "auto"
+    }
+  },
+  "javascript": {
+    "preferences": {
+      "quoteStyle": "double",
+      "importModuleSpecifier": "non-relative"
+    },
+    "suggest": {
+      "completeFunctionCalls": true,
+      "autoImports": true
+    }
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true
+  }
+}

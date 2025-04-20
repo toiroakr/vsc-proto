@@ -1,7 +1,9 @@
 node_modules/
 dist/
+coverage/
 
 .vscode/*
+!.vscode/extensions.json
 !.vscode/settings-project.jsonc
 .vscode/settings-local.jsonc
 .vscode/settings.json

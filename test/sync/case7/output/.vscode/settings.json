@@ -1,0 +1,25 @@
+{
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "files.encoding": "utf8",
+  "typescript.format.indentSize": 2,
+  "typescript.format.convertTabsToSpaces": true,
+  "javascript.format.indentSize": 2,
+  "javascript.format.convertTabsToSpaces": true,
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "files.trimTrailingWhitespace": true,
+  "editor.fontSize": 14,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "workbench.colorTheme": "Default Dark+",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "terminal.integrated.fontSize": 12,
+  "editor.wordWrap": "on"
+}
