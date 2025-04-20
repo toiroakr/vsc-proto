@@ -2,6 +2,7 @@ node_modules/
 dist/
 
 .vscode/*
+!.vscode/extensions.json
 !.vscode/settings-project.json
 .vscode/settings-local.json
 .vscode/settings.json

@@ -28,6 +28,7 @@
     "@biomejs/biome": "^1.9.4",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.14.1",
+    "dir-compare": "^5.0.0",
     "multiline-ts": "^4.0.1",
     "pkg-pr-new": "^0.0.42",
     "typescript": "^5.8.3",
