@@ -1,7 +1,7 @@
 {
   "name": "vsc-sync",
   "description": "CLI to share \".vscode/settings.json\"",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "author": "toiroakr",
   "license": "MIT",
   "repository": {
