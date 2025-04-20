@@ -17,17 +17,17 @@ function createPaths(testCase: TestCase) {
 	);
 	return {
 		case: casePath,
-		asis: path.join(casePath, "asis"),
+		input: path.join(casePath, "input"),
+		output: path.join(casePath, "output"),
 		sandbox: path.join(casePath, "sandbox"),
-		tobe: path.join(casePath, "tobe"),
-	};
+	} as const;
 }
 
 export async function setupTestCase(testCase: TestCase) {
 	const paths = createPaths(testCase);
 
 	await fs.remove(paths.sandbox);
-	await fs.copy(paths.asis, paths.sandbox);
+	await fs.copy(paths.input, paths.sandbox);
 
 	const gitkeepPath = path.join(paths.sandbox, ".gitkeep");
 	if (await fs.pathExists(gitkeepPath)) {
@@ -42,13 +42,13 @@ export async function setupTestCase(testCase: TestCase) {
 
 export async function assert(testCase: TestCase) {
 	const paths = createPaths(testCase);
-	const result = await compare(paths.sandbox, paths.tobe, {
+	const result = await compare(paths.sandbox, paths.output, {
 		compareContent: true,
 	});
 	expect(
 		result.same,
 		ml`
-    Check difference between ${paths.sandbox} and ${paths.tobe}.
+    Check difference between ${paths.sandbox} and ${paths.output}.
     Recommend using the "Choose 2 Folders and Compare" feature of the VSCode extension "Compare Folders.
     `,
 	).toBe(true);
