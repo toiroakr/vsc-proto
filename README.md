@@ -24,10 +24,10 @@ vsc-sync init
 - Adds the following to `.gitignore`:
   ```
   .vscode/settings.json
-  .vscode/settings-local.json
+  .vscode/settings-local.jsonc
   ```
-- If `.vscode/settings.json` exists, copies it to `.vscode/settings-project.json`.
-- Creates an empty `.vscode/settings-local.json` if it doesn't exist.
+- If `.vscode/settings.json` exists, copies it to `.vscode/settings-project.jsonc`.
+- Creates an empty `.vscode/settings-local.jsonc` if it doesn't exist.
 
 ### Synchronization
 
@@ -35,7 +35,7 @@ vsc-sync init
 vsc-sync sync
 ```
 
-- Merges `.vscode/settings-project.json` and `.vscode/settings-local.json` to create `.vscode/settings.json`.
+- Merges `.vscode/settings-project.jsonc` and `.vscode/settings-local.jsonc` to create `.vscode/settings.json`.
 - It's recommended to run this command with a Git post-checkout hook.
 
 #### Git Hook Setup

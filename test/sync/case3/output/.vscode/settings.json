@@ -1,0 +1,17 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.encoding": "utf8",
+  "typescript": {
+    "preferences": {
+      "quoteStyle": "double",
+      "importModuleSpecifier": "non-relative"
+    },
+    "suggest": {
+      "completeFunctionCalls": true
+    }
+  },
+  "editor.fontSize": 14,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "workbench.colorTheme": "Default Dark+"
+}
