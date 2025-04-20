@@ -1,8 +1,8 @@
-import fs from "fs-extra";
-import { compare } from "dir-compare";
 import path from "node:path";
-import { expect } from "vitest";
+import { compare } from "dir-compare";
+import fs from "fs-extra";
 import ml from "multiline-ts";
+import { expect } from "vitest";
 
 interface TestCase {
 	function: string;
