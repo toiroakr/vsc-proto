@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { execSync } from "node:child_process";
-import { styleText, isDeepStrictEqual } from "node:util";
 import path from "node:path";
+import { isDeepStrictEqual, styleText } from "node:util";
 import fs from "fs-extra";
 import { parse } from "jsonc-parser";
 
