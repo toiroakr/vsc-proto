@@ -1,7 +1,7 @@
 {
   "name": "vsc-sync",
   "description": "CLI to share \".vscode/settings.json\"",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "author": "toiroakr",
   "license": "MIT",
   "repository": {
@@ -22,6 +22,7 @@
   "dependencies": {
     "citty": "^0.1.6",
     "fs-extra": "^11.3.0",
+    "jsonc-parser": "^3.3.1",
     "pkg-types": "^2.1.0"
   },
   "devDependencies": {
