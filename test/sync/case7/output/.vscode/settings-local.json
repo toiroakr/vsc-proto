@@ -1,0 +1,15 @@
+{
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "editor.fontSize": 14,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "workbench.colorTheme": "Default Dark+",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "terminal.integrated.fontSize": 12,
+  "editor.wordWrap": "on"
+}

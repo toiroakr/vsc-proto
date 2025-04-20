@@ -1,0 +1,15 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.encoding": "utf8",
+  "typescript": {
+    "format": {
+      "indentSize": 2,
+      "convertTabsToSpaces": true
+    },
+    "preferences": {
+      "quoteStyle": "single",
+      "importModuleSpecifier": "relative"
+    }
+  }
+}
