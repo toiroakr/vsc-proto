@@ -1,0 +1,42 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.encoding": "utf8",
+  "typescript": {
+    "preferences": {
+      "quoteStyle": "double",
+      "importModuleSpecifier": "non-relative"
+    },
+    "suggest": {
+      "completeFunctionCalls": true,
+      "snippets": {
+        "enabled": false
+      }
+    },
+    "updateImportsOnFileMove": {
+      "enabled": "prompt"
+    },
+    "tsserver": {
+      "useSyntaxServer": "auto"
+    }
+  },
+  "javascript": {
+    "preferences": {
+      "quoteStyle": "double",
+      "importModuleSpecifier": "non-relative"
+    },
+    "suggest": {
+      "completeFunctionCalls": true,
+      "autoImports": true
+    }
+  },
+  "editor.fontSize": 14,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "workbench.colorTheme": "Default Dark+",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true
+  }
+}

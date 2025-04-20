@@ -48,7 +48,10 @@ async function ensureSettings(paths: Paths): Promise<void> {
 		const projectSettings = await fs.readJson(paths.projectSettingsPath);
 
 		// Backup settings.json before creating settings-local.json
-		if (Object.keys(settings).length > 0) {
+		if (
+			Object.keys(settings).length > 0 &&
+			!isDeepStrictEqual(settings, projectSettings)
+		) {
 			await fs.copy(paths.settingsPath, paths.settingsBackupPath);
 			console.log(
 				`${styleText("yellow", path.relative(process.cwd(), paths.settingsBackupPath))} created as backup.`,
