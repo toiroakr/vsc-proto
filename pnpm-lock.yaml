@@ -14,6 +14,9 @@ importers:
       fs-extra:
         specifier: ^11.3.0
         version: 11.3.0
+      jsonc-parser:
+        specifier: ^3.3.1
+        version: 3.3.1
       pkg-types:
         specifier: ^2.1.0
         version: 2.1.0
@@ -33,9 +36,6 @@ importers:
       dir-compare:
         specifier: ^5.0.0
         version: 5.0.0
-      jsonc-parser:
-        specifier: ^3.3.1
-        version: 3.3.1
       multiline-ts:
         specifier: ^4.0.1
         version: 4.0.1
