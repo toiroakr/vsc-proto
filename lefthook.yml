@@ -1,3 +1,7 @@
+pre-commit:
+  jobs:
+    - name: biome
+      run: pnpm exec biome check --no-errors-on-unmatched {staged_files}
 post-checkout:
   jobs:
     - name: sync vscode settings
