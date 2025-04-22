@@ -54,15 +54,15 @@ npx vsc-sync sync
 
 **[Lefthook](https://github.com/evilmartians/lefthook/blob/master/README.md)**
 
+```bash
+npm install lefthook --save-dev
+npx lefthook install
+```
+
 `lefthook.yml`
 ```yaml
 post-checkout:
   jobs:
     name: sync vscode settings
     run: npx vsc-sync sync
-```
-
-```bash
-npm install lefthook --save-dev
-npx lefthook install
 ```
